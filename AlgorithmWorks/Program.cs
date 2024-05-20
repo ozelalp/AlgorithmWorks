@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -89,6 +90,41 @@ namespace AlgorithmWorks
             // Permutations.SinglePermutations("aabb").ForEach(s => Console.WriteLine(s));
             // Permutations.SinglePermutations("abcde").ForEach(s => Console.WriteLine(s));
 
+
+            // Given an n x n array, return the array elements arranged from outermost elements to the middle element, traveling clockwise.
+
+            //Console.WriteLine(ParseInt("thirteen"));
+            //Console.WriteLine(ParseInt("zero"));
+            //Console.WriteLine(ParseInt("twenty-five"));
+            //Console.WriteLine(ParseInt("twenty-five hundred"));
+            //Console.WriteLine(ParseInt("twenty hundred"));
+            //Console.WriteLine(ParseInt("sixteen hundred thousand"));
+            //Console.WriteLine(ParseInt("one hundred sixteen thousand"));
+            //Console.WriteLine(ParseInt("five hundred one thousand five hundred five"));
+            //Console.WriteLine(ParseInt("five hundred and one thousand five hundred five"));
+
+            // Console.WriteLine(NextBiggerNumber(134523));
+            //Console.WriteLine(NextBiggerNumber(144));
+            //Console.WriteLine(NextBiggerNumber(1234567890));
+            //Console.WriteLine(NextBiggerNumber(1676702431));
+            // Console.WriteLine(NextBiggerNumber(9876543210));
+
+            //Console.WriteLine(BitwiseOperations(9));
+            //Console.WriteLine(BitwiseOperations(529));
+            //Console.WriteLine(BitwiseOperations(20));
+            //Console.WriteLine(BitwiseOperations(1041));
+
+            //Console.WriteLine(FindMissingElement(Array.Empty<int>()));
+            //Console.WriteLine(FindMissingElement(new int[] { 2 }));
+            //Console.WriteLine(FindMissingElement(new int[] { 1, 2, 5, 4 }));
+            //Console.WriteLine(FindMissingElement(new int[] { 2, 1, 3, 7, 6, 5 }));
+
+            Console.WriteLine(FindAbsoluteDistincCount(new int[] { 2147483647, 0 }));
+            Console.WriteLine(FindAbsoluteDistincCount(new int[] { -1, 0 }));
+            Console.WriteLine(FindAbsoluteDistincCount(new int[] { -1, 0, 1 }));
+            Console.WriteLine(FindAbsoluteDistincCount(new int[] { -2147483648, 0, 1 }));
+
+            Console.ReadLine();
         }
 
         public static int[] SelectionSort(int[] arr)
@@ -610,7 +646,7 @@ namespace AlgorithmWorks
         {
             // OBEB Ortak bolenlerin en buyugu, yani 5 ve 10 icin 10
             long gcd(long a, long b) => b != 0 ? gcd(b, a % b) : a;
-            
+
             // OKEK Ortak katlarin en kucugu, yani 5 ve 10 icin 5
             long lcm(long a, long b) => a * b / gcd(a, b);
 
@@ -719,7 +755,6 @@ namespace AlgorithmWorks
         public static bool Alphanumeric(string str)
         {
             return new Regex("^[a-zA-Z0-9]+$").Match(str).Success;
-
             //if (!String.IsNullOrEmpty(str))
             //{
             //    return String.IsNullOrEmpty(Regex.Replace(str, @"[a-zA-Z0-9]", ""));
@@ -734,7 +769,7 @@ namespace AlgorithmWorks
             var list = intervals
               .SelectMany(i => Enumerable.Range(i.Item1, i.Item2 - i.Item1));
 
-            return   list.Distinct().Count();
+            return list.Distinct().Count();
 
             //// HashSet unique bir liste, ayni degeri add etsen bile patlatmiyor ama eklemiyor da.
             //var list = new HashSet<int>();
@@ -776,7 +811,291 @@ namespace AlgorithmWorks
             //return maxSum;
         }
 
+        public static int[] Snail(int[][] array)
+        {
+            var outside = new int[][]
+            {
+        // top (left to right)
+        array[0],
+        // right (top to bottom)
+        array.Skip(1).Take(array.Length - 2).Select(x => x[x.Length - 1]).ToArray(),
+        // bottom (right to left)
+        array.Length > 1 ? array.Last().Reverse().ToArray() : new int[] {},
+        // left (bottom to top)
+        array.Skip(1).Take(array.Length - 2).Reverse().Select(x => x[0]).ToArray()
+            };
 
+            // Get the inside to recursively pass back into this Snail method
+            var inside = array
+              .Skip(1)
+              .Take(array.Length - 2)
+              .Select(x => x.Skip(1).Take(x.Length - 2).ToArray())
+              .ToArray();
+
+            // Return a flattened array
+            return outside
+              .SelectMany(x => x)
+              .Concat(inside.Length > 0 ? Snail(inside) : new int[] { })
+              .ToArray();
+        }
+
+        public static int[] Snail2(int[][] array)
+        {
+            int left = 0;
+            int right = array[0].Length - 1;
+            int top = 0;
+            int bottom = array.Length - 1;
+
+            List<int> result = new List<int>();
+            while (true)
+            {
+                if (left > right)
+                {
+                    return result.ToArray();
+                }
+
+                if (left == right)
+                {
+                    for (int i = top; i <= bottom; i++)
+                    {
+                        result.Add(array[i][right]);
+                    }
+
+                    return result.ToArray();
+                }
+
+                for (int i = left; i < right; i++)
+                {
+                    result.Add(array[top][i]);
+                }
+
+                for (int i = top; i < bottom; i++)
+                {
+                    result.Add(array[i][right]);
+                }
+
+                for (int i = right; i > left; i--)
+                {
+                    result.Add(array[bottom][i]);
+                }
+
+                for (int i = bottom; i > top; i--)
+                {
+                    result.Add(array[i][left]);
+                }
+
+                left++;
+                right--;
+                top++;
+                bottom--;
+            }
+        }
+
+        // text içinde verilen sayıyı int olarak geri döndürme,
+        // "two hundred forty-six" gibi.
+        public static int ParseInt(string s)
+        {
+            var textNumbers = s.Replace(" and", "").Split(" ");
+            var total = 0;
+
+            // format separateNumber | bigNumber+separateNumber + pointer
+            // first check pointNumbers
+            // then check 
+            
+            // first check million
+            if (textNumbers.Contains(NumberTestParser.MILLION))
+            {
+                return 1000000;
+            }
+            else if (textNumbers.Contains(NumberTestParser.THOUSAND))
+            {
+                var thoIndex = Array.FindIndex(textNumbers, e => e == NumberTestParser.THOUSAND);
+                var firstPart = NumberTestParser.GetHundred(textNumbers[..thoIndex]);
+                total = firstPart * 1000;
+
+                if (thoIndex+1 < textNumbers.Length)
+                {
+                    var secondPart = NumberTestParser.GetHundred(textNumbers[++thoIndex..]);
+                    total += secondPart;
+                }
+            }
+            else
+            {
+                var secondPart = NumberTestParser.GetHundred(textNumbers);
+                total += secondPart;
+            }
+
+            return total;
+        }
+
+        // verilen long degerinin rakamlarindan en buyuk sayiyi cikartir...
+        public static long ToBiggerNumber(long n)
+        {
+            var digits = n.ToString().Select(s => int.Parse(s.ToString())).ToArray();
+            
+            Array.Sort(digits, new Comparison<int>((x, y) => y.CompareTo(x)));
+
+            // yukaridaki tek seferde yapar...
+            // Array.Sort(digits);
+            // Array.Reverse(digits);
+            var value = long.Parse(string.Join("", digits));
+            if (value == n)
+                return -1;
+
+            return value;
+        }
+
+        // verilen long degerinin rakamlarindan en buyuk sayiyi cikartir...
+        public static long NextBiggerNumber(long n)
+        {
+            var digits = n.ToString().Select(s => int.Parse(s.ToString())).ToArray();
+            var swapIndex1 = 0;
+            var swapIndex2 = 0;
+            long tempNumber = 0;
+
+            for (int i=digits.Length -1; i>0; i--)
+            {
+                var first = digits[i];
+                for (int j = i-1; j>=0; j--)
+                {
+                    var second = digits[j];
+                    if (first > second)
+                    {
+                        digits[i] = second;
+                        digits[j] = first;
+                        
+                        long tValue = long.Parse(string.Join("", digits));
+                        if (tempNumber == 0)
+                        {
+                            tempNumber = tValue;
+                            swapIndex1 = i;
+                            swapIndex2 = j;
+                        }
+                        else if(tValue < tempNumber)
+                        {
+                            tempNumber = tValue;
+                            swapIndex1 = i;
+                            swapIndex2 = j;
+                        }
+                        digits = n.ToString().Select(s => int.Parse(s.ToString())).ToArray();
+                        break;
+                    }
+                }
+            }
+
+            if (swapIndex1 == 0 && swapIndex2 == 0)
+                return -1;
+
+            var temp = digits[swapIndex2];
+            digits[swapIndex2] = digits[swapIndex1];
+            digits[swapIndex1] = temp;
+
+            Array.Sort(digits, swapIndex2+1, digits.Length - (swapIndex2+1));
+
+            var value = long.Parse(string.Join("", digits));
+
+            return value;
+        }
+
+        public static long NextBiggerNumber1(long n)
+        {
+            static string Nums(long num) => string.Concat(num.ToString().OrderByDescending(i => i));
+            var num = Nums(n);
+            if (num == n.ToString()) return -1;
+            do
+            {
+                n++;
+            } while (Nums(n) != num);
+
+            return n;
+        }
+
+        // Create a function named divisors/Divisors that takes an integer n > 1 and returns an array with all of the integer's divisors(except for 1 and the number itself), from smallest to largest. If the number is prime return the string '(integer) is prime' (null in C#
+        public static int[] Divisors(int n)
+        {
+            var divisors = new List<int>();
+            // burada ben n-1 e kadar yap demiştim, elemanlar Math.Sqrt(n) kullanmışlar, daha mantıklı.
+            for (int i = (int)Math.Sqrt(n); i >1 ; i--)
+            {
+                if (n % i == 0)
+                    divisors.Add(i);
+            }
+
+            if (divisors.Count > 0)
+            {
+                divisors.Reverse();
+                return divisors.ToArray();
+            }
+
+            return null;
+        }
+
+        public static int BitwiseOperations(int n)
+        {
+            var binary = Convert.ToString(n, 2);
+            int zCount = 0, maxZero = 0;
+            bool start = false;
+
+            foreach (var bit in binary)
+            {
+                if (bit.Equals('0'))
+                {
+                    zCount++;
+                    start = true;
+                }
+                else
+                {
+                    if (start && zCount > maxZero)
+                    {
+                        maxZero = zCount;
+                    }
+                    zCount = 0;
+                    start = false;
+                }
+            }
+
+            return maxZero;
+        }
+
+        public static int FindMissingElement(int[] A)
+        {
+            Array.Sort(A);
+            if (A.Length == 0)
+                    return 1;
+
+            for (int i = 0; i< A.Length; i++)
+            {
+                if (A[i] != i+1)
+                    return i+1;
+            }
+
+            return A.Length + 1;
+        }
+
+        // Verilen dizideki elemanların mutlak değerlerini alıp, kaç tane farklı sayı var onu döndürür.
+        // long'a çevirdik çünkü -2147483648 değeri int'in max değeri 2147483647 den büyük oluyor.
+        public static int FindAbsoluteDistincCount(int[] A)
+        {
+            return A.Select(s => Math.Abs((long)s)).GroupBy(g => g).Count();
+        }
+
+        // [-100, 1, 2, 3, 7, 5] en küçük pozitif missing eleman 4.
+        public static int FindMissingMinPositiveNumber(int[] A)
+        {
+            Array.Sort(A);
+            var positiveNumberArray = A.Where(w => w > 0).ToArray();
+            if (positiveNumberArray.Count() == 0)
+                return 1;
+
+            // bunun performansi çok kötü çıktı, Any veya Contains, büyük array'ler için 6 sn den uzun sürdü, Except olan geçti.
+            // return Enumerable.Range(1, positiveNumberArray.Max(m => m)+1).First(s => !positiveNumberArray.Any(s));
+            return Enumerable.Range(1, positiveNumberArray.Max(m => m)+1).Except(positiveNumberArray).Min();
+
+            // array Union ve Intgersect ornekleri.
+            //int[] arr1 = new int[] { 45, 26, 99, 55, 36 };
+            //int[] arr2 = new int[] { 45, 26, 99, 20, 36 };
+            //var res = arr1.Union(arr2).Except(arr1.Intersect(arr2));
+        }
     }
 
     public class RomanNumerals
@@ -909,6 +1228,85 @@ namespace AlgorithmWorks
                     RecPer(list, pre + rem[i].ToString(), rem.Remove(i, 1));
                 }
             }
+        }
+    }
+
+    public class NumberTestParser
+    {
+        public static readonly Dictionary<string, int> separateNumbers = new()
+        {
+            {"zero", 0 },
+            {"one", 1 },
+            {"two", 2 },
+            {"three", 3 },
+            {"four", 4 },
+            {"five", 5 },
+            {"six", 6 },
+            {"seven", 7 },
+            {"eight", 8 },
+            {"nine", 9 },
+            {"ten", 10 },
+            {"eleven", 11 },
+            {"twelve", 12 },
+            {"thirteen", 13 },
+            {"fourteen", 14 },
+            {"fifteen", 15 },
+            {"sixteen", 16 },
+            {"seventeen", 17 },
+            {"eighteen", 18 },
+            {"nineteen", 19 },
+            {"twenty", 20 },
+            {"thirty", 30 },
+            {"forty", 40 },
+            {"fifty", 50 },
+            {"sixty", 60 },
+            {"seventy", 70 },
+            {"eighty", 80 },
+            {"ninety", 90 }
+        };
+
+        public static readonly string MILLION = "million";
+        public static readonly string THOUSAND = "thousand";
+        public static readonly string HUNDRED = "hundred";
+
+        public static readonly Dictionary<string, int> pointNumbers = new()
+        {
+            {"million", 1000000 },
+            {"thousand", 1000 },
+            {"hundred", 100 }
+        };
+
+        public static int GetHundred(string[] textNumbers)
+        {
+            var add = GetBasicNumber(textNumbers[0]);
+            // that should be 100
+            if (textNumbers.Length > 1 && textNumbers[1] == NumberTestParser.HUNDRED)
+                add *= add>9 ? 10 : 100;
+            if (textNumbers.Length > 2)
+                add += GetBasicNumber(textNumbers[2]);
+
+            return add;
+        }
+
+        public static int GetBasicNumber(string text)
+        {
+            int add = 0;
+            int firstPart = 0;
+            int secondPart = 0;
+
+            if (text.Contains("-"))
+            {
+                var splText = text.Split("-");
+                firstPart = NumberTestParser.separateNumbers[splText[0]];
+                secondPart = NumberTestParser.separateNumbers[splText[1]];
+                add = firstPart + secondPart;
+            }
+            else
+            {
+                add = NumberTestParser.separateNumbers[text];
+            }
+
+            return add;
         }
     }
 }

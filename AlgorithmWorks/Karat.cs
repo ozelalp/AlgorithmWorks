@@ -60,7 +60,7 @@ class Solution
 
     public static List<int> VisitedPages;
 
-    static void Main(String[] args)
+    static void Main1(String[] args)
     {
         var endings = new int[] { 6, 15, 21, 30 };
         var choices1 = new int[][] {
