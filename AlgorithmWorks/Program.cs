@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Mail;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace AlgorithmWorks
 {
+    using static System.Formats.Asn1.AsnWriter;
     using Interval = System.ValueTuple<int, int>;
     class Program
     {
@@ -119,12 +123,97 @@ namespace AlgorithmWorks
             //Console.WriteLine(FindMissingElement(new int[] { 1, 2, 5, 4 }));
             //Console.WriteLine(FindMissingElement(new int[] { 2, 1, 3, 7, 6, 5 }));
 
-            Console.WriteLine(FindAbsoluteDistincCount(new int[] { 2147483647, 0 }));
-            Console.WriteLine(FindAbsoluteDistincCount(new int[] { -1, 0 }));
-            Console.WriteLine(FindAbsoluteDistincCount(new int[] { -1, 0, 1 }));
-            Console.WriteLine(FindAbsoluteDistincCount(new int[] { -2147483648, 0, 1 }));
+            //Console.WriteLine(FindAbsoluteDistincCount(new int[] { 2147483647, 0 }));
+            //Console.WriteLine(FindAbsoluteDistincCount(new int[] { -1, 0 }));
+            //Console.WriteLine(FindAbsoluteDistincCount(new int[] { -1, 0, 1 }));
+            //Console.WriteLine(FindAbsoluteDistincCount(new int[] { -2147483648, 0, 1 }));
+
+            //IQueryable<Invoice> invoices;
+            //invoices.SelectMany(s => s.InvoiceItems).GroupBy(g => g.Name)
+            //    .Select(s => new KeyValuePair<string, long>(s.First().Name, s.Sum(c => c.Count))).ToDictionary(d => d.Key, v => v.Value);
+            //invoices.Where(w => w.AcceptanceDate == null).Sum(i => i.InvoiceItems.Sum(ii => ii.Count * ii.Price));
+
+            //DateTime? from;
+
+            //List<Invoice> inv = invoices.ToList();
+
+            //var d = 15 / 3.5;
+
+            // finding if rest sum is equal to max number
+            //Console.WriteLine(TotalEqualsMax(new int[] { 1, 2, 3, 5 })); // false
+            //Console.WriteLine(TotalEqualsMax(new int[] { 1, 2, 3, 6 })); // true
+
+            // find the division of sum of numbers in str / str.Length
+            // Console.WriteLine(NumberSearch("Al1per3459")); // 2
+
+            // find the most frequent number in int array.
+            // Console.WriteLine(MostFrequentNumber(new int[] { 1, 2, 3, 6, 6, 1, 2, 6 })); // 2
+            // Console.WriteLine(LongestWord("fun&!! time")); // 2
+            // Console.WriteLine(LongestWord("I love dogs")); // 2
+            CoinDeterminer(16);
 
             Console.ReadLine();
+        }
+
+        //private IReadOnlyDictionary<string, long> Test(DateTime? from, DateTime? to)
+        //{
+        //    var invoiceItemDictionary = new Dictionary<string, long>();
+        //    IQueryable<Invoice> scopedInvoiceList = this.invoices;
+        //    ICollection<Invoice> test;
+        //    if (test.Count == 0)
+        //    if (from.HasValue)
+        //    {
+        //        scopedInvoiceList = scopedInvoiceList.Where(w => w.CreationDate >= from);
+        //    }
+
+        //    this.GetStores(((s) => s.StoreId == storeId), true);
+        //    MailAddress
+        //    if (to.HasValue)
+        //    {
+        //        scopedInvoiceList = scopedInvoiceList.Where(w => w.CreationDate <= to);
+        //    }
+        //    // Key invoiceItem.Name
+        //    // Value InvoiceItem.Count
+        //    return scopedInvoiceList.SelectMany(s => s.InvoiceItems).GroupBy(g => g.Name).Select(s => new KeyValuePair<string, long>(s.First().Name, s.Sum(c => c.Count))).ToDictionary(d => d.Key, v => v.Value);
+        //}
+        //private ICollection<Invoice> GetStores(Func<Invoice, bool> filter, bool includeCustomers = false)
+        //{
+
+        //}
+
+        public class Invoice
+        {
+            // A unique numerical identifier of an invoice (mandatory)
+            public int Id { get; set; }
+            // A short description of an invoice (optional).
+            public string Description { get; set; }
+            // A number of an invoice e.g. 134/10/2018 (mandatory).
+            public string Number { get; set; }
+            // An issuer of an invoice e.g. Metz-Anderson, 600  Hickman Street,Illinois (mandatory).
+            public string Seller { get; set; }
+            // A buyer of a service or a product e.g. John Smith, 4285  Deercove Drive, Dallas (mandatory).
+            public string Buyer { get; set; }
+            // A date when an invoice was issued (mandatory).
+            public DateTime CreationDate { get; set; }
+            // A date when an invoice was paid (optional).
+            public DateTime? AcceptanceDate { get; set; }
+            // A collection of invoice items for a given invoice (can be empty but is never null).
+            public IList<InvoiceItem> InvoiceItems { get; }
+
+            public Invoice()
+            {
+                InvoiceItems = new List<InvoiceItem>();
+            }
+        }
+
+        public class InvoiceItem
+        {
+            // A name of an item e.g. eggs.
+            public string Name { get; set; }
+            // A number of bought items e.g. 10.
+            public uint Count { get; set; }
+            // A price of an item e.g. 20.5.
+            public decimal Price { get; set; }
         }
 
         public static int[] SelectionSort(int[] arr)
@@ -1096,6 +1185,127 @@ namespace AlgorithmWorks
             //int[] arr2 = new int[] { 45, 26, 99, 20, 36 };
             //var res = arr1.Union(arr2).Except(arr1.Intersect(arr2));
         }
+
+        public static bool TotalEqualsMax(int[] intArray)
+        {
+            var max = intArray.Max();
+            var total = intArray.Sum();
+            return total - max == max;
+        }
+
+        public static decimal NumberSearch(string str)
+        {
+            var numbers = Regex.Matches(str, "[0-9]").Sum(s => int.Parse(s.Value));
+            return Math.Round((decimal)(numbers / str.Length));
+        }
+
+        public static int? MostFrequentNumber(int[] intArray)
+        {
+            return intArray.GroupBy(g => g).OrderByDescending(g => g.Count()).FirstOrDefault()?.Key;
+        }
+
+        public static string LongestWord(string sen)
+        {
+            // code goes here  
+            sen = new string(sen.Where(c => !char.IsPunctuation(c)).ToArray());
+            var wordList = sen.Split(' ');
+            
+            return wordList.OrderByDescending(m => m.Length).First();
+        }
+
+        // HiQ Challenge1
+        public static string Test111(string sen)
+        {
+           string s = "{\"name\":{\"first\":\"Robert\",\"middle\":\"\",\"last\":\"Smith\"},\"age\":25,\"DOB\":\"-\",\"hobbies\":[\"running\",\"coding\",\"-\"],\"education\":{\"highschool\":\"N\\/A\",\"college\":\"Yale\"}}";
+            Console.WriteLine(s);
+
+            int removeIndex = s.IndexOf("\"N\\/A\"");
+            int startDelete = 0;
+            int endDelete = 0;
+            int curlyIndex = 0;
+            while (removeIndex > 0)
+            {
+                startDelete = s.LastIndexOf(',', removeIndex);
+                endDelete = s.IndexOf(",", removeIndex);
+                if (endDelete > 0 && removeIndex + 6 == endDelete)
+                {
+                    endDelete = removeIndex + 7;
+                }
+                else
+                {
+                    endDelete = removeIndex + 6;
+                }
+
+                curlyIndex = s.LastIndexOf('{', removeIndex);
+                s = s.Substring(0, curlyIndex > startDelete ? curlyIndex + 1 : startDelete) + s.Substring(endDelete);
+                Console.WriteLine(s);
+
+                removeIndex = s.IndexOf("\"N\\/A\"");
+            }
+
+            removeIndex = s.IndexOf("\"-\"");
+            while (removeIndex > 0)
+            {
+                startDelete = s.LastIndexOf(',', removeIndex);
+                curlyIndex = s.LastIndexOf('{', removeIndex);
+                s = s.Substring(0, curlyIndex > startDelete ? curlyIndex + 1 : startDelete) + s.Substring(removeIndex + 3);
+                Console.WriteLine(s);
+
+                removeIndex = s.IndexOf("\"-\"");
+            }
+
+            removeIndex = s.IndexOf("\"\"");
+            while (removeIndex > 0)
+            {
+                startDelete = s.LastIndexOf(',', removeIndex);
+                curlyIndex = s.LastIndexOf('{', removeIndex);
+                s = s.Substring(0, curlyIndex > startDelete ? curlyIndex + 1 : startDelete) + s.Substring(removeIndex + 2);
+                Console.WriteLine(s);
+
+                removeIndex = s.IndexOf("\"\"");
+            }
+
+            Console.WriteLine(s);
+            return s;
+        }
+
+        // HiQ Challenge2
+        public static int CoinDeterminer(int num)
+        {
+            int coinCount = 0;
+                while (num - 11 > 0)
+                {
+                    num = num - 11;
+                    coinCount++;
+                }
+
+                while (num - 9 > 0)
+                {
+                    num = num - 9;
+                    coinCount++;
+                }
+
+                while (num - 7 > 0)
+                {
+                    num = num - 7;
+                    coinCount++;
+                }
+
+                while (num - 5 > 0)
+                {
+                    num = num - 5;
+                    coinCount++;
+                }
+
+                if (num > 0)
+                    coinCount += num;
+
+            return coinCount;
+        }
+
+        // HiQ Challenge3
+        // Terrfa
+
     }
 
     public class RomanNumerals
