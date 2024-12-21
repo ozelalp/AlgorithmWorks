@@ -164,9 +164,9 @@ namespace AlgorithmWorks
             //Console.WriteLine(Math.Round(10.51m));// 11, en yakın int sayıyı döndürür
             //Console.WriteLine(Math.Round(10.99m));// 11, en yakın int sayıyı döndürür
 
-            Console.WriteLine(5 % 4);// 1, bölümden kalanı döndürür
-            Console.WriteLine(5 % 5);// 0, bölümden kalanı döndürür
-            Console.WriteLine(9 % 4);// 1, bölümden kalanı döndürür
+            //Console.WriteLine(5 % 4);// 1, bölümden kalanı döndürür
+            //Console.WriteLine(5 % 5);// 0, bölümden kalanı döndürür
+            //Console.WriteLine(9 % 4);// 1, bölümden kalanı döndürür
 
 
 
