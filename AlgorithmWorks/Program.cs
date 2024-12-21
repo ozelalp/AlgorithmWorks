@@ -150,7 +150,25 @@ namespace AlgorithmWorks
             // Console.WriteLine(MostFrequentNumber(new int[] { 1, 2, 3, 6, 6, 1, 2, 6 })); // 2
             // Console.WriteLine(LongestWord("fun&!! time")); // 2
             // Console.WriteLine(LongestWord("I love dogs")); // 2
-            CoinDeterminer(16);
+            // CoinDeterminer(16);
+
+
+            //Console.WriteLine(Math.Ceiling(10.0m)); // 10, en yakın bir üst veya eşit sayıyı döndürür
+            //Console.WriteLine(Math.Ceiling(10.4m)); // 11, en yakın bir üst veya eşit sayıyı döndürür
+            //Console.WriteLine(Math.Floor(10.4m)); // 10, en yakın veya eşit sayıyı döndürür
+            //Console.WriteLine(Math.Floor(10.9m)); // 10, en yakın veya eşit sayıyı döndürür
+            //Console.WriteLine(Math.Round(10.4m)); // 10, en yakın int sayıyı döndürür
+            //Console.WriteLine(Math.Round(10.45m));// 10, en yakın int sayıyı döndürür
+            //Console.WriteLine(Math.Round(10.5m));// 10, en yakın int sayıyı döndürür
+            //Console.WriteLine(Math.Round(10.50m));// 10, en yakın int sayıyı döndürür
+            //Console.WriteLine(Math.Round(10.51m));// 11, en yakın int sayıyı döndürür
+            //Console.WriteLine(Math.Round(10.99m));// 11, en yakın int sayıyı döndürür
+
+            Console.WriteLine(5 % 4);// 1, bölümden kalanı döndürür
+            Console.WriteLine(5 % 5);// 0, bölümden kalanı döndürür
+            Console.WriteLine(9 % 4);// 1, bölümden kalanı döndürür
+
+
 
             Console.ReadLine();
         }
@@ -1303,8 +1321,38 @@ namespace AlgorithmWorks
             return coinCount;
         }
 
-        // HiQ Challenge3
-        // Terrfa
+        // int[] A1 = { 1, 3, 6, 4, 1, 2 };
+        // Console.WriteLine(Solution(A1)); // Çıktı: 5
+        // verilen dizideki benzer sayıları çıkartır ve sadece 0 dan büyükleri alır.
+        public int Solution(int[] A)
+        {
+            // bu for yapısı benzer sayıları ve 0 dan büyükleri çıkartmadığı için performans kaybına neden olur.
+            for (int i = 1; i <= 100000; i++)
+            {
+                if (!A.Contains(i))
+                    return i;
+            }
+            // HashSet kullanarak benzersiz pozitif sayıları saklayacağız.
+            HashSet<int> numbers = new HashSet<int>();
+
+            // Dizideki pozitif sayıları HashSet'e ekleyelim
+            foreach (int num in A)
+            {
+                if (num > 0)
+                {
+                    numbers.Add(num);
+                }
+            }
+
+            // 1'den başlayarak eksik olan en küçük pozitif tam sayıyı arayalım
+            int smallestMissing = 1;
+            while (numbers.Contains(smallestMissing))
+            {
+                smallestMissing++;
+            }
+
+            return smallestMissing;
+        }
 
     }
 
