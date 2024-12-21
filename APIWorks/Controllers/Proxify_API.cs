@@ -3,7 +3,7 @@ using Microsoft.Extensions.Primitives;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 
-namespace WebApi.Tests
+namespace APIWorks.Controllers
 {
     public class ApiController : Controller
     {
@@ -25,8 +25,8 @@ namespace WebApi.Tests
             {
                 return Unauthorized();
             }
-
-            return Ok(this._repository.GetStores((s) => s.CountryCode == userCountyCode));
+            _repository.GetStores((s) => s.CountryCode == userCountyCode).First();
+            return Ok(_repository.GetStores((s) => s.CountryCode == userCountyCode));
         }
 
         // Return UnauthorizedResult(), NotFoundResult(), ForbidResult() or OkObjectResult(Store)
@@ -39,7 +39,7 @@ namespace WebApi.Tests
             }
 
             // get Store by Id
-            var storeList = this._repository.GetStores(((s) => s.StoreId == storeId), includeCustomers);
+            var storeList = _repository.GetStores((s) => s.StoreId == storeId, includeCustomers);
             if (storeList == null || storeList.Count == 0)
             {
                 return NotFound();
@@ -68,7 +68,7 @@ namespace WebApi.Tests
                 return BadRequest();
             }
 
-            return Ok(this._repository.AddCustomer(customer));
+            return Ok(_repository.AddCustomer(customer));
         }
 
         private bool CheckHeaderAndSetUserCountryCode(IHeaderDictionary headers, out string userCountyCode)
@@ -87,7 +87,7 @@ namespace WebApi.Tests
         private bool ValidateCustomer(Customer customer, string userCountyCode)
         {
             // check the store by Id and CountryCode
-            var storeList = this._repository.GetStores(((s) => s.StoreId == customer.StoreId && s.CountryCode == userCountyCode));
+            var storeList = _repository.GetStores((s) => s.StoreId == customer.StoreId && s.CountryCode == userCountyCode);
             if (storeList == null)
             {
                 return false;
