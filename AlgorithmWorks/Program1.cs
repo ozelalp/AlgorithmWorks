@@ -12,11 +12,20 @@ using System.Text.RegularExpressions;
 namespace AlgorithmWorks
 {
     using static System.Formats.Asn1.AsnWriter;
+    using static System.Net.Mime.MediaTypeNames;
     using Interval = System.ValueTuple<int, int>;
     class Program1
     {
         public void Main1(string[] args)
         {
+            string s = "alper";
+
+            int index = s.IndexOf('o');
+            if (index >= 0)
+            {
+                s = s.Substring(0, index) + '0' + s.Substring(index + 1);
+            }
+
             // var arr = new int[] { 1, 6, 5 }; //, 6, 21, 77, 4, 23, 9, 78, 90, 10 };
             // Array.ForEach(SelectionSort(arr), Console.WriteLine);
 

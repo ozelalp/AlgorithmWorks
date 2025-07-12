@@ -1,18 +1,21 @@
 ﻿/*
-You are reading a Build Your Own Story book. It is like a normal book except that choices on some pages affect the story, sending you to one of two options for your next page.
+You are reading a Build Your Own Story book. It is like a normal book except that choices on some pages affect the story, 
+sending you to one of two options for your next page.
 
 These choices are really stressing you out, so you decide that you'll either always pick the first option, or always pick the second option.
 
 You start reading at page 1 and read forward one page at a time unless you reach a choice or an ending.
 
-The choices are provided in a list, sorted by the page containing the choice, and each choice has two options of pages to go to next. In this example, you are on page 3, where there is a choice. Option 1 goes to page 14 and Option 2 goes to page 2.
+The choices are provided in a list, sorted by the page containing the choice, and each choice has two options of pages to go to next. 
+In this example, you are on page 3, where there is a choice. Option 1 goes to page 14 and Option 2 goes to page 2.
 
 choices1 = [[3, 14, 2]] => [current_page, option_1, option_2]
 The ending pages are also given in a sorted list:
 
 endings = [6, 15, 21, 30]
 
-Given a list of endings, a list of choices with their options, and the choice you will always take (Option 1 or Option 2), return the ending you will reach. If you get stuck in a loop, return -1.
+Given a list of endings, a list of choices with their options, and the choice you will always take (Option 1 or Option 2), 
+return the ending you will reach. If you get stuck in a loop, return -1.
 
 Example:
 find_ending(endings, choices1, 1) (always Option 1)
